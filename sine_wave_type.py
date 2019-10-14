@@ -4,7 +4,7 @@ import sys
 import copy
 import socket
 import webbrowser as web
-from useful_functions_python3 import getKeyboardResponse, showText, setAndPresentStimulus, createDirectories, openOutputFile, printHeader, importTrialsWithHeader, calculateRectangularCoordinates, loadFiles, popupError, getRunTimeVars, evaluateLists, writeToFile
+from useful_functions_python3 import getKeyboardResponse, setAndPresentStimulus, createDirectories, openOutputFile, printHeader, importTrialsWithHeader, calculateRectangularCoordinates, loadFiles, popupError, getRunTimeVars, evaluateLists, writeToFile
 from generateTrials import *
 
 
@@ -34,8 +34,8 @@ class Exp:
 		generateTrials(runTimeVars, runTimeVarOrder)
 		(self.header,self.trialInfo) = importTrialsWithHeader('trials/'+runTimeVars['subjCode']+'_trials.csv', separator=',')
 
-		#self.win = visual.Window(fullscr=True,allowGUI=False, color="gray", units='pix')
-		self.win = visual.Window([800,600],allowGUI=True, color="gray", units='pix')
+		self.win = visual.Window(fullscr=True,allowGUI=False, color="gray", units='pix')
+		#self.win = visual.Window([800,600],allowGUI=True, color="gray", units='pix')
 		#visual.TextStim(win=self.win,text="Loading stimuli...").draw()
 		self.win.flip()
 		self.pics =  loadFiles('stimuli/visual','.png','image', win=self.win)
@@ -75,6 +75,7 @@ class Exp:
 
 
 	def collectWordResponse(self,stimsToDraw,startString='→ ',pos=(200,-80)):
+		event.clearEvents()
 		responded=False
 		response=startString
 		if type(stimsToDraw)==list:
@@ -145,7 +146,7 @@ class Exp:
 	def show_trial(self,curTrial):
 
 		rating_scale = visual.RatingScale(win=self.win,tickMarks=[1,2,3,4,5],marker='triangle', tickHeight=0.5,
-			textColor='white', size=1.2, pos=[0.0, -340.0], low=1, high=5,markerColor="black",
+			textColor='white', size=1.2, pos=[0.0, -380.0], low=1, high=5,markerColor="black",
 			mouseOnly=False,labels = ['Just guessing', 'Completely Sure'], scale='1=Just guessing; 5=Completely sure', markerStart=None, showValue = True, 
 			disappear=True, showAccept=False, acceptPreText="pretext", acceptText="",
 			lineColor='white')

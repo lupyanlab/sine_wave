@@ -6,10 +6,10 @@ from psychopy import core, visual, prefs, event, gui,misc, data
 from psychopy import sound
 import socket
 import datetime
-# try:
-# 	import pygame
-# except ImportError:
-# 	pass
+try:
+	import pygame
+except ImportError:
+	pass
 
 
 def createDirectories(directories):
@@ -40,7 +40,7 @@ def importTrials(trialsFilename, colNames=None, separator='\t'):
 	return trialsList
 
 
-def importTrialsWithHeader(trialsFilename, colNames=None, separator='\t', header=True):
+def importTrialsWithHeader(trialsFilename, colNames=None, separator='\t', header=True,check_lengths=True):
 	try:
 		trialsFile = open(trialsFilename, 'r')
 	except IOError:
@@ -51,7 +51,8 @@ def importTrialsWithHeader(trialsFilename, colNames=None, separator='\t', header
 	trialsList = []
 	for trialStr in trialsFile:
 		trialList = trialStr.rstrip().split(separator)
-		assert len(trialList) == len(colNames)
+		if check_lengths:
+			assert len(trialList) == len(colNames)
 		trialDict = dict(list(zip(colNames, trialList)))
 		trialsList.append(trialDict)
 	if header:
@@ -89,7 +90,7 @@ def createRespNew(allSubjVariables,subjVariables,fieldVarNames,fieldVars,**respV
 def printHeader(header,headerFile='header.txt',separator="\t", overwrite=False):
 	if overwrite or (not overwrite and not os.path.isfile(headerFile)):
 		headerFile = open(headerFile,'w')
-		writeToFile(headerFile,header,writeNewLine=True)
+		writeToFile(headerFile,header,writeNewLine=True,separator=separator)
 		return True
 	else:
 		return False		
@@ -118,6 +119,66 @@ def circularList(lst,seed):
 		if (i+1) % len(lst) ==0:
 			random.shuffle(lst)
 		i = (i + 1)%len(lst)
+
+
+def setAndPresentStimulus(win,stimuli,duration=0):
+	"""Stimuli can be a list or a single draw-able stimulus"""
+	if isinstance(stimuli,list):
+		for curStim in stimuli:
+			curStim.draw()
+	else:
+		stimuli.draw()
+	if duration==0: #single frame
+		win.flip()
+	else: 
+		win.flip()
+		core.wait(duration)
+	return
+
+
+def showText(win,textToShow,color="black",waitForKey=True,acceptOnly=0,inputDevice="keyboard",mouse=False,pos=[0,0],scale=1,font="NA"):
+	event.clearEvents()
+	win.flip()
+	if win.units == "pix":
+		height = 30*scale
+		wrapWidth=int(win.size[0]*.8)
+	elif win.units == "deg":
+		height=.7*scale
+		wrapWidth=30
+	else:
+		wrapWidth=None
+	if font!= "NA":
+		textStim = visual.TextStim(win, pos=pos,wrapWidth=wrapWidth,color=color,height=height,text=textToShow,font=font)
+	else:
+		textStim = visual.TextStim(win, pos=pos,wrapWidth=wrapWidth,color=color,height=height,text=textToShow)	
+	textStim.draw()
+	win.flip()
+	if mouse:
+		while any(mouse.getPressed()):
+			core.wait(.1) #waits for the user to release the mouse
+		while not any(mouse.getPressed()):
+			pass
+		return
+	elif inputDevice=="keyboard":
+		if waitForKey:
+			if acceptOnly==0:
+				event.waitKeys()
+			else:
+				print('waiting for ', acceptOnly)
+				event.waitKeys(keyList=[acceptOnly])
+			return
+		else:
+			return
+	elif inputDevice=="gamepad": #also uses mouse if mouse is not false
+		while True:
+			for event in pygame.event.get(): #check responses
+				if mouse:
+					if event.type==pygame.MOUSEBUTTONDOWN:
+						pygame.event.clear() 
+						return
+				if event.type==pygame.KEYDOWN or event.type==pygame.JOYBUTTONDOWN:
+					pygame.event.clear() 
+					return
 
 
 def popupError(text):

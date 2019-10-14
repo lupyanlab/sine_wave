@@ -1,0 +1,1 @@
+subjCode,seed,gender,expName,trial_type,block,stim_num,first_seen,word,file_name,response,startedTypingRT,finishedTypingRT,confidence_rating,confidence_rating_RT
