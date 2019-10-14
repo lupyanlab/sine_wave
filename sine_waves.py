@@ -68,11 +68,22 @@ class Exp:
 
 		self.mooney_instructions_text = """
 			For this part you won't need the headphones.\n
-			Mooney image instructions
+			Mooney image instructions\n
+			The next few screens will show you some examples of the types of images you'll see.
 			"""
 
-		self.break_text = "Please take a short break.  Press one of the response keys to continue"
+		self.break_text = "Please take a short break.  Press one of the response keys to continue."
 
+
+	def mooney_practice(self,pic_name=False,intro_text='',stim_name=''):
+		#self.pics[stim_name]['stim'].setPos(0,0)
+		if pic_name:
+			self.pics[pic_name]['stim'].draw()
+		visual.TextStim(self.win,text=intro_text,height=20,color="black",pos=(0,200)).draw()
+		visual.TextStim(self.win,text=stim_name,height=30,color="black",pos=(0,-200)).draw()
+		visual.TextStim(self.win,text="Press a key to continue.",height=18,color="black",pos=(0,-370)).draw()
+		self.win.flip()
+		event.waitKeys()
 
 	def collectWordResponse(self,stimsToDraw,startString='→ ',pos=(200,-80)):
 		event.clearEvents()
@@ -146,7 +157,7 @@ class Exp:
 	def show_trial(self,curTrial):
 
 		rating_scale = visual.RatingScale(win=self.win,tickMarks=[1,2,3,4,5],marker='triangle', tickHeight=0.5,
-			textColor='white', size=1.2, pos=[0.0, -380.0], low=1, high=5,markerColor="black",
+			textColor='white', size=1.1, pos=[0.0, -420.0], low=1, high=5,markerColor="black",textSize=.8,
 			mouseOnly=False,labels = ['Just guessing', 'Completely Sure'], scale='1=Just guessing; 5=Completely sure', markerStart=None, showValue = True, 
 			disappear=True, showAccept=False, acceptPreText="pretext", acceptText="",
 			lineColor='white')
@@ -216,6 +227,12 @@ if __name__ == '__main__':
 			exp.show_instructions(exp.sine_instructions_text)
 		elif i==0 and curTrial['trial_type']=='mooney':
 			exp.show_instructions(exp.mooney_instructions_text)
+			exp.mooney_practice(pic_name='car_practice',intro_text="Can you see what's in this image?",stim_name='')
+			exp.mooney_practice(pic_name='car_practice',intro_text="Try to see the object named below in this image.\nThen press a key for a hint.",stim_name='A car!')
+			exp.mooney_practice(pic_name='car_practice_revealed',intro_text='',stim_name='A car!')
+			exp.mooney_practice(pic_name='lawnmower_practice',intro_text="Can you see what's in this image?",stim_name='')
+			exp.mooney_practice(pic_name='lawnmower_practice',intro_text="Try to see the object named below in this image.\nThen press a key for a hint.",stim_name='A lawn mower!')
+			exp.mooney_practice(pic_name='lawnmower_practice_revealed',intro_text='',stim_name='A lawn mower!')
 
 		# #show break screen
 		# if i>0 and i % exp.takeBreakEveryXTrials == 0:

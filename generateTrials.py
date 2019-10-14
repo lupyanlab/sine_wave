@@ -21,7 +21,7 @@ def generateTrials(runTimeVars,runTimeVarsOrder):
 	trials_sine = trials.loc[trials.trial_type=="sine_wave"]
 	trials_mooney = trials.loc[trials.trial_type=="mooney"]
 	separator = ','
-	num_blocks_sine_wave = 3
+	num_blocks_sine_wave = 3 #if you want to test just mooney images, set this to 0
 	num_blocks_mooney = 1
 	
 	trials_sine = trials_sine.sample(frac=1, random_state=runTimeVars['seed']).reset_index(drop=True)
